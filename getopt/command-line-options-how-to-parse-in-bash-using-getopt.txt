@@ -1,0 +1,48 @@
+# What is “getopt”?
+getopt is a program that parses command line options in shell scripts. It is the enhanced version of older getopts and uses the getopt C library to do its job. It is compatible with getopts as long as GETOPT_COMPATIBLE environment variable is set, however some of it best features are not available in compatibility mode.
+
+# An overview of command options
+Command line input is viewed in 3 categories by getopt: short options (like -a), long options (like --some-option) and non-option parameters (like /home/bahman/reports.txt). Also short and long options can accept arguments (like -a /home/bahman/Temp or --some-option 'A commit comment').
+
+# Short option
+A short option is composed of a - (dash character) followed by a single letter, for example -a or -A, and it may expect an argument.
+
+	Without argument like -a or -H
+	With argument
+		With required arguments like -a bahman or -H reports
+		With optional arguments like -abahman. Note that there can't be any spaces between the option (-a) and the argument (bahman).
+
+# Long option
+A long option is composed of a -- (two consequent dash characters) followed by any number of alpha-numeric characters (like --option-a) and it may expect an argument.
+
+Without argument like --option-a or --more-2-go
+With arguments
+	With required arguments like --file-to-process reports or --package-name-prefix='com.bahmanm'
+	With optional arguments like --package-name-prefix='com.bahmanm'. Note that the argument can be passed only using =.
+ 
+
+# What is an “option string”?
+The only way to tell getopt about the options it should expect is by building an option string. Normally you would pass 2 option strings to getopt, one for short options and the other for long options.
+
+## Option string for short options
+It is passed to getopt using -o option and follows the rules below.
+
+Rules:
+1. Each single character stands for an option.
+2. A : (colon character) tells that the option has a required argument.
+3. A :: (two consequent colon character) tells that the option has an optional argument.
+
+Example:
+The option string f:gh::i: means that the are four options. f has a required argument, g has no argument, h has an optional argument and i has a required argument.
+
+## Option string for long options
+It is passed to getopt using --long option and follows the rules below.
+
+Rules:
+1. Options are separated by , (comma character).
+2. A : (colon character) tells that the option has a required argument.
+3. A :: (two consequent colon character) tells that the option has an optional argument.
+
+Example:
+The options string foo,bar::,baz:,foobar means that there are four options. foo has no argument, bar has an optional argument, baz has a required argument and foobar has no argument.
+

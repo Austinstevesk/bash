@@ -1,0 +1,122 @@
+### Special Charaters ###
+***************************************************************************************************************************************
+
+"               partial quoting [double quote]. "STRING" preserves (from interpretation) most of the special characters within STRING.
+
+'               full quoting [single quote]. 'STRING' preserves all special characters within STRING. This is a stronger form of quoting than "STRING".
+
+eg.1
+    bash$ ls -l [Vv]*
+    vs
+    bash$ ls -l '[Vv]*'
+    vs
+    bash$ ls -l "[Vv]*"
+
+eg.2
+    bash$ echo $(ls -l)
+    vs
+    bash$ echo "$(ls -l)"
+    vs
+    bash$ echo '$(ls -l)'   
+***************************************************************************************************************************************
+
+-               redirection from/to stdin or stdout
+eg.
+    echo "whatever" | cat -
+    tar cf - . > filearchive
+
+The "-" can be used to pipe stdout to other commands. 
+    grep Linux file1 | diff file2 -
+***************************************************************************************************************************************
+
+# Parameter substitution gets case-modification operators.
+    var=veryMixedUpVariable
+    echo ${var^}           # VeryMixedUpVariable
+    echo ${var^^}         # VERYMIXEDUPVARIABLE
+    echo ${var,}            # veryMixedUpVariable
+    echo ${var,,}           # verymixedupvariable
+***************************************************************************************************************************************
+
+# command substitution uses backquotes (`...`) reassigns the output of a command or even multiple commands
+
+`               The `command` construct makes available the output of command for assignment to a variable
+
+eg.1
+    rm `cat filename`   # "filename" contains a list of files to delete.
+    script_name=`basename $0`
+
+eg.2
+    variable1=`<file1`       #  Set "variable1" to contents of "file1".
+    variable2=`cat file2`   #  Set "variable2" to contents of "file2".
+                                        #  This, however, forks a new process,
+                                        #+ so the line of code executes slower than the above version.
+
+eg.3 Generating a variable from a loop
+    variable1=`for i in 1 2 3 4 5
+    do
+      echo -n "$i"                 #  The 'echo' command is critical
+    done`                          #+ to command substitution here.
+
+    echo "variable1 = $variable1"  # variable1 = 12345
+***************************************************************************************************************************************
+
+:               null command. This is the shell equivalent of a "NOP" (no op, a do-nothing operation). It may be considered a synonym for the shell builtin 
+                true.
+
+eg.1
+    :
+    echo $?   # 0
+
+eg.2
+while :
+do
+   operation-1
+   operation-2
+   ...
+   operation-n
+done
+
+eg.3
+if condition
+then :   # Do nothing and branch ahead
+else     # Or else ...
+   take-some-action
+fi
+
+eg.4 Provide a placeholder where a binary operation is expected
+: ${username=`whoami`}              #  ":" necessary because otherwise Bash attempts to interpret "$[ n = $n + 1 ]" as a command
+***************************************************************************************************************************************
+
+!               Indirect variable references. This is useful for referencing members of an array or table, or for simulating a
+                multi-dimensional array. An indexing option (analogous to pointer arithmetic) would have been nice.
+eg.
+	t=table_cell_3
+	table_cell_3=24
+	echo "t = ${!t}"                      # t = 24
+	table_cell_3=387
+	echo "Value of t changed to ${!t}"    # 387
+***************************************************************************************************************************************
+
+?                test operator. Within certain expressions, the ? indicates a test for a condition.
+                 condition?result-if-true:result-if-false
+eg.
+	(( var0 = var1<98?9:21 )
+***************************************************************************************************************************************
+
+$$               process ID variable
+***************************************************************************************************************************************
+
+()                command group.
+                  (a=hello; echo $a)
+
+eg.
+	a=123
+	( a=321; )	      
+
+	echo "a = $a"   # a = 123
+	# "a" within parentheses acts like a local variable.
+
+()               array initialization.
+                 Array=(element1 element2 element3)
+
+
